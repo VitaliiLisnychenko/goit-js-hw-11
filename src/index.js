@@ -9,7 +9,7 @@ const loadMoreEl = document.querySelector('.load-more');
 
 formEl.addEventListener('submit', onFormSubmit);
 loadMoreEl.addEventListener('click', onLoadMore);
-// console.log(simpleLightbox);
+
 const pixabayApi = new PixabayApi();
 
 let lightbox = new simpleLightbox('.photo-card a', {
@@ -18,11 +18,10 @@ let lightbox = new simpleLightbox('.photo-card a', {
   captionSelector: 'img',
   captionPosition: 'bottom',
   captionDelay: 250,
-  // animationSpeed:	250,
 });
 
 Notiflix.Notify.init({
-  position: 'right-bottom',
+  position: 'center-center',
 });
 
 function createMarkup({ hits }) {
@@ -39,7 +38,7 @@ function createMarkup({ hits }) {
       }) => {
         return `<div class="photo-card">
           <a class="photo-link" href="${largeImageURL}">
-        <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+        <img class="photo-img" src="${webformatURL}" alt="${tags}" loading="lazy" />
       </a>
         <div class="info">
           <p class="info-item">
@@ -104,4 +103,16 @@ function onFormSubmit(evt) {
   renderImages();
   Notiflix.Loading.remove();
 }
-async function onLoadMore() {}
+async function onLoadMore() {
+  pixabayApi.incrementPage();
+
+  if (pixabayApi.page < Math.ceil(pixabayApi.totalHits / pixabayApi.per_page)) {
+    loadMoreEl.classList.remove('hidden');
+  } else {
+    Notiflix.Notify.info(
+      "We're sorry, but you've reached the end of search results."
+    );
+    loadMoreEl.classList.add('hidden');
+  }
+  await renderImages();
+}

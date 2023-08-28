@@ -7,7 +7,7 @@ export class PixabayApi {
   constructor() {
     this.searchQuery = '';
     this.page = 1;
-    this.per_page = 5;
+    this.per_page = 40;
     this.totalHits = 0;
   }
 
